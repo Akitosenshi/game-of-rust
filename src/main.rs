@@ -1,12 +1,19 @@
 use std::io;
 use std::io::Write;
 
-mod input;
 mod game;
+mod input;
 fn draw(stdout: &mut io::Stdout, field: &Vec<Vec<bool>>) {
     for row in field {
         for col in row {
-            write!(stdout, "{} ", {if *col {"X"} else {"0"}}).unwrap();
+            write!(stdout, "{} ", {
+                if *col {
+                    "X"
+                } else {
+                    "0"
+                }
+            })
+            .unwrap();
         }
         write!(stdout, "\n").unwrap();
     }
@@ -43,7 +50,9 @@ fn main() {
         match buffer.trim() {
             "q" => break,
             "c" => flip(&stdin, &mut game),
-            _ => {game.step();},
+            _ => {
+                game.step();
+            }
         }
     }
 }
@@ -53,11 +62,11 @@ fn flip(stdin: &io::Stdin, game: &mut game::Game) {
     stdin.read_line(&mut buffer).unwrap();
     let list = input::parse(buffer);
     for pair in list.iter() {
-        #[cfg(debug_assertions)]
-        println!("{:?}", pair);
-        for x in pair.x.start..pair.x.end {
-            for y in pair.y.start..pair.y.end {
-                game.flip(x, y);
+        if ((pair.x.end - pair.x.start) < 1000) && ((pair.y.end - pair.y.start) < 1000) {
+            for x in pair.x.start..pair.x.end {
+                for y in pair.y.start..pair.y.end {
+                    game.flip(x, y);
+                }
             }
         }
     }
